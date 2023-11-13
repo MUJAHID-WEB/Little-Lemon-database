@@ -1,0 +1,22 @@
+CREATE PROCEDURE ManageBooking(
+    IN p_booking_id INT,
+    IN p_customer_id INT,
+    IN p_booking_date DATE,
+    IN p_status VARCHAR(255)
+)
+BEGIN
+    -- Check if the booking_id exists to determine if it's an update or a new booking
+    IF (SELECT COUNT(*) FROM Bookings WHERE booking_id = p_booking_id) > 0 THEN
+        -- Update existing booking
+        UPDATE Bookings
+        SET
+            customer_id = p_customer_id,
+            booking_date = p_booking_date,
+            status = p_status
+        WHERE booking_id = p_booking_id;
+    ELSE
+        -- Insert new booking
+        INSERT INTO Bookings (customer_id, booking_date, status)
+        VALUES (p_customer_id, p_booking_date, p_status);
+    END IF;
+END;
